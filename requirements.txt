@@ -56,7 +56,7 @@ fastapi[all]==0.112.2
     #   fastapi-users
 fastapi-cli[standard]==0.0.5
     # via fastapi
-fastapi-users[sqlalchemy]==13.0.0
+fastapi-users[redis,sqlalchemy]==13.0.0
     # via
     #   -r requirements.in
     #   fastapi-users-db-sqlalchemy
@@ -136,6 +136,8 @@ pyyaml==6.0.2
     # via
     #   fastapi
     #   uvicorn
+redis==5.0.8
+    # via fastapi-users
 rich==13.8.0
     # via typer
 shellingham==1.5.4

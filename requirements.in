@@ -3,4 +3,5 @@ sqlalchemy
 alembic
 black
 fastapi-users[sqlalchemy]
+fastapi-users[redis]
 asyncpg
