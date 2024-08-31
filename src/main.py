@@ -1,14 +1,14 @@
 import uvicorn
 import uuid
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi_users import FastAPIUsers
 
 from auth.auth_backend import auth_backend
 from auth.models import User
 from auth.schemas import UserRead, UserCreate
-from auth.user_manager import get_user_manager
-
+from auth.user_manager import get_user_manager, UserManager
+from auth.auth_backend import redis
 
 app = FastAPI(title="YourToDoList")
 
@@ -17,16 +17,25 @@ fastapi_users = FastAPIUsers[User, uuid.UUID](
     [auth_backend],
 )
 
+current_user = fastapi_users.current_user()
+
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
     tags=["auth"],
 )
 
+@app.post("/auth/logout", tags=["auth"])
+async def logout(user = Depends(current_user), manager: UserManager = Depends(get_user_manager)):
+    await redis.delete(user.redis_token_key)
+    await manager._update(user, {"redis_token_key": None})
+
+    return {"detail": "Successfully logged out"}
+
 app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
-    tags=["auth"],
+    fastapi_users.get_auth_router(backend=auth_backend),
+    prefix='/auth',
+    tags=['auth']
 )
 
 app.include_router(
