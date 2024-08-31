@@ -10,6 +10,8 @@ from auth.schemas import UserRead, UserCreate
 from auth.user_manager import get_user_manager, UserManager
 from auth.auth_backend import redis
 
+from core.router import router as core_router
+
 app = FastAPI(title="YourToDoList")
 
 fastapi_users = FastAPIUsers[User, uuid.UUID](
@@ -49,6 +51,8 @@ app.include_router(
     prefix="/auth",
     tags = ["auth"]
 )
+
+app.include_router(core_router)
 
 if __name__ == "__main__":
     uvicorn.run(

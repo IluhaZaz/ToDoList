@@ -10,6 +10,7 @@ sys.path.append(os.path.join(sys.path[0], 'src'))
 
 #files with models start
 from auth.models import User
+from core.models import Item
 #files with models end
 
 from database import Base
