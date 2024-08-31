@@ -6,4 +6,5 @@ from database import Base
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
+    username: Mapped[str] = mapped_column(String, nullable=False)
     redis_token_key: Mapped[str] = mapped_column(String, default=None, nullable=True)
