@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -28,13 +28,26 @@ async def add_item_to_list(item: ItemCreate,
     await session.commit()
 
 @router.get("/get_items", response_model=list[ItemRead])
-async def get_items(user: User = Depends(current_user),
+async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_length=2, min_length=2),
+                    user: User = Depends(current_user),
                     session: AsyncSession = Depends(get_async_session)):
+    
+    if sort_by[0] not in (None, "priority", "do_till"):
+        raise HTTPException(422)
+    try:
+        sort_by[1] = int(sort_by[1])
+    except:
+        raise HTTPException(422)
+
     query = select(User).options(joinedload(User.to_do_items)).filter(user.id == User.id)
     user_with_items = await session.execute(query)
     user_with_items = user_with_items.unique().scalars().first()
-    
+
     res = [ItemRead.model_validate(i, from_attributes=True) for i in user_with_items.to_do_items]
+
+    if sort_by[1] != 0:
+        res.sort(key=lambda x: getattr(x, sort_by[0]), reverse=True if sort_by[1] > 0 else False)
+
     return res
 
 @router.post("/marks_as_done")
