@@ -84,6 +84,8 @@ flower==2.0.1
     # via -r requirements.in
 greenlet==3.0.3
     # via sqlalchemy
+gunicorn==23.0.0
+    # via -r requirements.in
 h11==0.14.0
     # via
     #   httpcore
@@ -124,7 +126,9 @@ mypy-extensions==1.0.0
 orjson==3.10.7
     # via fastapi
 packaging==24.1
-    # via black
+    # via
+    #   black
+    #   gunicorn
 pathspec==0.12.1
     # via black
 platformdirs==4.2.2

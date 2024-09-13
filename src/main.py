@@ -10,14 +10,15 @@ from auth.schemas import UserRead, UserCreate
 from auth.user_manager import get_user_manager, UserManager
 from auth.auth_backend import redis
 
-from core.router import router as core_router
-
-app = FastAPI(title="YourToDoList")
-
 fastapi_users = FastAPIUsers[User, uuid.UUID](
     get_user_manager,
     [auth_backend],
 )
+
+from core.router import router as core_router
+
+
+app = FastAPI(title="YourToDoList")
 
 current_user = fastapi_users.current_user()
 

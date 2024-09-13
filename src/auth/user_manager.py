@@ -62,7 +62,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        content: str = f"<div>Dear {user.username}, use this token to verify your password</div><div>{token}</div>"
+        content: str = f"<div>Dear {user.username}, use this token to verify your email</div><div>{token}</div>"
         email: dict[str, str] = get_email_template_dashboard(to=user.email,
                                                             theme="Email verification",
                                                             content=content)
