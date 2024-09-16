@@ -1,5 +1,6 @@
 import uuid
 import json
+
 from typing import Optional
 
 from fastapi import Depends, Request, Response
@@ -31,7 +32,8 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
 
-        content: str = f"<div>Dear {user.username}, you has been registred at ToDoList service</div>"
+        content: str = f"<div>Dear {user.username}, "
+        "you has been registred at ToDoList service</div>"
         email: dict[str, str] = get_email_template_dashboard(to=user.email,
                                                             theme="Successful registration",
                                                             content=content)
@@ -42,7 +44,8 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        content: str = f"<div>Dear {user.username}, use this token to reset your password</div><div>{token}</div>"
+        content: str = f"<div>Dear {user.username}, use this token to reset your password</div>"
+        "<div>{token}</div>"
         email: dict[str, str] = get_email_template_dashboard(to=user.email,
                                                             theme="Password reset",
                                                             content=content)
@@ -62,7 +65,8 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        content: str = f"<div>Dear {user.username}, use this token to verify your email</div><div>{token}</div>"
+        content: str = f"<div>Dear {user.username}, use this token to verify your email</div>"
+        "<div>{token}</div>"
         email: dict[str, str] = get_email_template_dashboard(to=user.email,
                                                             theme="Email verification",
                                                             content=content)

@@ -1,6 +1,12 @@
 import uuid
 
-from sqlalchemy import String, Integer, DATE, TIMESTAMP, UUID, Boolean, ForeignKey
+from sqlalchemy import (String, 
+                        Integer, 
+                        DATE, 
+                        TIMESTAMP, 
+                        UUID, 
+                        Boolean, 
+                        ForeignKey)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
@@ -16,4 +22,3 @@ class Item(Base):
     do_till: Mapped[DATE | TIMESTAMP] = mapped_column(TIMESTAMP(timezone=True), default=None, nullable=True)
     is_done: Mapped[bool] = mapped_column(Boolean, default=False)
     user = relationship("User", back_populates="to_do_items")
-
