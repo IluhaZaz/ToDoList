@@ -27,17 +27,36 @@ async def add_item_to_list(item: ItemCreate,
     session.add(item_db)
     await session.commit()
 
-@router.get("/get_items", response_model=list[ItemRead])
+    return {
+        "status": "ok",
+        "detail": "item added",
+        "data": ItemRead(**item.model_dump(), id=item_db.id, is_done=False)
+    }
+
+
+@router.get("/get_items")
 async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_length=2, min_length=2),
                     user: User = Depends(current_user),
                     session: AsyncSession = Depends(get_async_session)):
     
     if sort_by[0] not in (None, "priority", "do_till"):
-        raise HTTPException(422)
+        raise HTTPException(status_code=422, detail=
+                            {
+                            "status": "error",
+                            "detail": "item added",
+                            "data": "wrong field to sort by"
+                            }
+        )
     try:
         sort_by[1] = int(sort_by[1])
     except:
-        raise HTTPException(422)
+        raise HTTPException(status_code=422, detail=
+                            {
+                            "status": "error",
+                            "detail": "item added",
+                            "data": "second argument must be integer"
+                            }
+        )
 
     query = select(User).options(joinedload(User.to_do_items)).filter(user.id == User.id)
     user_with_items = await session.execute(query)
@@ -48,7 +67,12 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
     if sort_by[1] != 0:
         res.sort(key=lambda x: getattr(x, sort_by[0]), reverse=True if sort_by[1] > 0 else False)
 
-    return res
+    return {
+        "status": "ok",
+        "detail": "got items",
+        "data": res
+    }
+
 
 @router.post("/marks_as_done")
 async def mark(item_id: UUID, 
@@ -61,6 +85,13 @@ async def mark(item_id: UUID,
         return
     item_db.is_done = True
     await session.commit()
+
+    return {
+        "status": "ok",
+        "detail": "item is done",
+        "data": ItemRead(**item_db.__dict__)
+    }
+
 
 @router.patch("/update_item")
 async def update_item(item_id: UUID,
@@ -77,6 +108,13 @@ async def update_item(item_id: UUID,
             setattr(item_db, field, val)
     await session.commit()
 
+    return {
+        "status": "ok",
+        "detail": "item updated",
+        "data": ItemRead(**item_db.__dict__)
+    }
+
+
 @router.delete("/delete_item")
 async def delete_item(item_id,
                       session: AsyncSession = Depends(get_async_session),
@@ -87,3 +125,9 @@ async def delete_item(item_id,
         return
     await session.delete(item_db)
     await session.commit()
+
+    return {
+        "status": "ok",
+        "detail": "item deleted",
+        "data": None
+    }

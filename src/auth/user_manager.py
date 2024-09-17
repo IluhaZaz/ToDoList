@@ -7,6 +7,7 @@ from fastapi import Depends, Request, Response
 from fastapi_users import BaseUserManager, UUIDIDMixin
 
 from auth.models import User
+from auth.schemas import UserRead
 from auth.utils import get_user_db
 from auth.auth_backend import redis
 from config import RESET_PASSWORD_TOKEN_SECRET, VERIFICATION_TOKEN_SECRET
@@ -30,9 +31,15 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
         print(f"user {user.id} has logined")
 
+        return {
+        "status": "ok",
+        "detail": "logged in",
+        "data": UserRead.model_validate(user, from_attributes=True)
+        }
+
     async def on_after_register(self, user: User, request: Optional[Request] = None):
 
-        content: str = f"<div>Dear {user.username}, "
+        content: str = f"<div>Dear {user.username}, " \
         "you has been registred at ToDoList service</div>"
         email: dict[str, str] = get_email_template_dashboard(to=user.email,
                                                             theme="Successful registration",
@@ -41,17 +48,29 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
         print(f"User {user.id} has registered.")
 
+        return {
+        "status": "ok",
+        "detail": "you have been registred",
+        "data": UserRead.model_validate(user, from_attributes=True)
+        }
+
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        content: str = f"<div>Dear {user.username}, use this token to reset your password</div>"
-        "<div>{token}</div>"
+        content: str = f"<div>Dear {user.username}, use this token to reset your password</div>" \
+        f"<div>{token}</div>"
         email: dict[str, str] = get_email_template_dashboard(to=user.email,
                                                             theme="Password reset",
                                                             content=content)
         send_email_report_dashboard.delay(email)
 
         print(f"User {user.id} has forgot their password. Reset token: {token}")
+
+        return {
+        "status": "ok",
+        "detail": "requested password reset",
+        "data": token
+        }
 
     async def on_after_reset_password(self, user: User, request: Request | None = None) -> None:
         content: str = f"<div>Dear {user.username}, your password has been reseted</div>"
@@ -62,17 +81,29 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
         print(f"User {user.id}has reseted password")
 
+        return {
+        "status": "ok",
+        "detail": "password reseted",
+        "data": None
+        }
+
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        content: str = f"<div>Dear {user.username}, use this token to verify your email</div>"
-        "<div>{token}</div>"
+        content: str = f"<div>Dear {user.username}, use this token to verify your email</div>" \
+        f"<div>{token}</div>"
         email: dict[str, str] = get_email_template_dashboard(to=user.email,
                                                             theme="Email verification",
                                                             content=content)
         send_email_report_dashboard.delay(email)
 
         print(f"Verification requested for user {user.id}. Verification token: {token}")
+
+        return {
+        "status": "ok",
+        "detail": "requested verification",
+        "data": token
+        }
     
     async def on_after_verify(self, user: User, request: Request | None = None) -> None:
         content: str = f"<div>Dear {user.username}, your email has been verified"
@@ -82,6 +113,12 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         send_email_report_dashboard.delay(email)
 
         print(f"User {user.id} has been verified")
+
+        return {
+        "status": "ok",
+        "detail": "email verified",
+        "data": None
+        }
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
