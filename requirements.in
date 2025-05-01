@@ -7,4 +7,6 @@ fastapi-users[redis]
 asyncpg
 celery
 flower
+pytest
+pytest-asyncio
 gunicorn
