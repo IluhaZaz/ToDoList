@@ -2,6 +2,7 @@ import uvicorn
 import uuid
 
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_users import FastAPIUsers
 
 from auth.auth_backend import auth_backend
@@ -19,6 +20,14 @@ from core.router import router as core_router
 
 
 app = FastAPI(title="YourToDoList")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 current_user = fastapi_users.current_user()
 
