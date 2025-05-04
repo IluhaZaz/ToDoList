@@ -96,3 +96,17 @@
       cursor: not-allowed;
     }
   }
+.register-link,
+.login-link {
+  margin-top: 1rem;
+  text-align: center;
+  
+  a {
+    color: #4285f4;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
