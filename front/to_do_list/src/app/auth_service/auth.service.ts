@@ -48,6 +48,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    this.http.post(`${this.apiUrl}/auth/logout`, ``)
   }
 
   isAuthenticated(): boolean {

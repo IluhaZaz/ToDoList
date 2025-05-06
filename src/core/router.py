@@ -30,7 +30,7 @@ async def add_item_to_list(item: ItemCreate,
     return {
         "status": "ok",
         "detail": "item added",
-        "data": ItemRead(**item.model_dump(), id=item_db.id, is_done=False)
+        "data": [ItemRead(**item.model_dump(), id=item_db.id, is_done=False)]
     }
 
 
@@ -74,7 +74,7 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
     }
 
 
-@router.post("/marks_as_done")
+@router.post("/toggle_status")
 async def mark(item_id: UUID, 
                user: User = Depends(current_user),
                session: AsyncSession = Depends(get_async_session)
@@ -83,13 +83,13 @@ async def mark(item_id: UUID,
 
     if item_db.user_id != user.id:
         return
-    item_db.is_done = True
+    item_db.is_done = not item_db.is_done
     await session.commit()
 
     return {
         "status": "ok",
         "detail": "item is done",
-        "data": ItemRead(**item_db.__dict__)
+        "data": [ItemRead(**item_db.__dict__)]
     }
 
 
@@ -111,7 +111,7 @@ async def update_item(item_id: UUID,
     return {
         "status": "ok",
         "detail": "item updated",
-        "data": ItemRead(**item_db.__dict__)
+        "data": [ItemRead(**item_db.__dict__)]
     }
 
 
@@ -129,5 +129,5 @@ async def delete_item(item_id,
     return {
         "status": "ok",
         "detail": "item deleted",
-        "data": None
+        "data": []
     }

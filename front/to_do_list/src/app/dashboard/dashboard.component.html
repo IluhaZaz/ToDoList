@@ -1,0 +1,35 @@
+<div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1>Мой To-Do список</h1>
+      <button (click)="logout()" class="logout-button">Выйти</button>
+    </header>
+  
+    <div class="todo-form">
+      <input
+        [(ngModel)]="newTodoTitle"
+        (keyup.enter)="addTodo()"
+        placeholder="Добавить новую задачу"
+        class="todo-input"
+      >
+      <button (click)="addTodo()" class="add-button">Добавить</button>
+    </div>
+  
+    <div *ngIf="isLoading" class="loading">Загрузка...</div>
+  
+    <ul *ngIf="!isLoading" class="todo-list">
+      <li *ngFor="let todo of todos" class="todo-item">
+        <input
+          type="checkbox"
+          [checked]="todo.is_done"
+          (change)="toggleTodo(todo)"
+          class="todo-checkbox"
+        >
+        <span [class.completed]="todo.is_done">{{ todo.name }}</span>
+        <button (click)="deleteTodo(todo.id!)" class="delete-button">×</button>
+      </li>
+    </ul>
+  
+    <div *ngIf="!isLoading && todos.length === 0" class="empty-message">
+      Нет задач. Добавьте первую!
+    </div>
+  </div>

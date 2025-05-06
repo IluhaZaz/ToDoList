@@ -29,7 +29,7 @@ export class LoginComponent {
         this.authService.login(email, password).subscribe({
           next: (response) => {
             console.log('Успешный вход', response);
-            this.router.navigate(['/']);
+            this.router.navigate(['/dashboard']);
           },
           error: (error) => {
             console.error('Ошибка входа:', error);
