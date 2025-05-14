@@ -64,8 +64,9 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
 
     res = [ItemRead.model_validate(i, from_attributes=True) for i in user_with_items.to_do_items]
 
-    if sort_by[1] != 0:
-        res.sort(key=lambda x: getattr(x, sort_by[0]), reverse=True if sort_by[1] > 0 else False)
+    #баг, а не фича
+    # if sort_by[1] != 0:
+    #     res.sort(key=lambda x: getattr(x, sort_by[0]), reverse=True if sort_by[1] > 0 else False)
 
     return {
         "status": "ok",
