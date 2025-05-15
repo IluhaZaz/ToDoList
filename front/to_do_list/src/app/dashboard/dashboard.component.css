@@ -94,6 +94,7 @@
   flex-direction: column;
   max-height: 70vh;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .low-priority {
@@ -139,7 +140,7 @@
 }
 .todo-main span {
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.5rem;
   margin-bottom: 0.2rem;
 }
 .completed {
@@ -148,13 +149,16 @@
 }
 
 .comment-box {
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   background: #ececec;
   color: #444;
   padding: 0.5rem;
   border-radius: 4px;
   margin-top: 0.3rem;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* позволяет сохранять переносы строк + авто-перенос */
+  word-wrap: break-word; 
+  
+
 }
 
 .delete-button {
