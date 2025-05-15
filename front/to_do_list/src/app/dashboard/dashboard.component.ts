@@ -83,10 +83,10 @@ export class DashboardComponent implements OnInit {
 
   deleteTodo(id: string): void {
     this.todoService.deleteTodo(id).subscribe({
-      next: () => {
-        this.todos = this.todos.filter(t => t.id !== id);
-      }
-    });
+        next: () => {
+          this.loadTodos();
+        }
+      });
   }
 
   logout(): void {
