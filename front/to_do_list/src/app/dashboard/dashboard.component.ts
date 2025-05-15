@@ -13,6 +13,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class DashboardComponent implements OnInit {
   todos: ToDoItem[] = [];
+  lowPriorityTodos: ToDoItem[] = [];
+  mediumPriorityTodos: ToDoItem[] = [];
+  highPriorityTodos: ToDoItem[] = [];
   newTodoTitle = '';
   newTodoPriority = 1; 
   newTodoDoTill: string | null = null;
@@ -33,6 +36,11 @@ export class DashboardComponent implements OnInit {
     this.todoService.getTodos().subscribe({
       next: (todos) => {
         this.todos = todos;
+
+        this.lowPriorityTodos = todos.filter(t => t.priority === 1);
+        this.mediumPriorityTodos = todos.filter(t => t.priority === 2);
+        this.highPriorityTodos = todos.filter(t => t.priority === 3);
+
         this.isLoading = false;
       },
       error: () => {
@@ -53,10 +61,17 @@ export class DashboardComponent implements OnInit {
       do_till: this.newTodoDoTill ? new Date(this.newTodoDoTill) : null
     };
 
-    this.todoService.addTodo(newTodo).subscribe({
-      next: (todo) => {
-        this.todos.push(todo);
+    // this.todoService.addTodo(newTodo).subscribe({
+    //   next: (todo) => {
+    //     this.todos.push(todo);
+    //     this.newTodoTitle = '';
+    //   }
+    // });
+
+        this.todoService.addTodo(newTodo).subscribe({
+        next: (todo) => {
         this.newTodoTitle = '';
+        this.loadTodos();  
       }
     });
   }
