@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit {
   newTodoTitle = '';
   newTodoPriority = 1; 
   newTodoDoTill: string | null = null;
+  newTodoComment: string | null = null;
   isLoading = true;
 
   constructor(
@@ -56,7 +57,7 @@ export class DashboardComponent implements OnInit {
       id: ``,
       name: this.newTodoTitle.trim(),
       is_done: false,
-      comment: null,
+      comment: this.newTodoComment?.trim() || null,
       priority: this.newTodoPriority,    
       do_till: this.newTodoDoTill ? new Date(this.newTodoDoTill) : null
     };
@@ -71,6 +72,7 @@ export class DashboardComponent implements OnInit {
         this.todoService.addTodo(newTodo).subscribe({
         next: (todo) => {
         this.newTodoTitle = '';
+        this.newTodoComment = '';
         this.loadTodos();  
       }
     });

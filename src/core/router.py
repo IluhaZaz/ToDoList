@@ -64,7 +64,9 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
 
     res = [ItemRead.model_validate(i, from_attributes=True) for i in user_with_items.to_do_items]
 
-    #баг, а не фича
+    #баг, а не фича И Я СКАЗАЛ ЧТО ЭТО НЕ НУЖНО
+    #ПОТОМ КАК НИБУДЬ ДОБАВЮ СОРТИРОВКУ ПО ВРЕМЕНИ, А ПОКА РАБОТАЕТ НЕ ТРОЖЬ
+    # Я ЗНАЮ ГДЕ ТЫ ЖИВЕШЬ И КОГДА ХОДИШЬ НА ПАРЫ
     # if sort_by[1] != 0:
     #     res.sort(key=lambda x: getattr(x, sort_by[0]), reverse=True if sort_by[1] > 0 else False)
 

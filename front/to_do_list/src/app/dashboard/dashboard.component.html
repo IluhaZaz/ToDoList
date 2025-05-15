@@ -11,11 +11,19 @@
       placeholder="Добавить новую задачу"
       class="todo-input"
     />
+
+    <input
+      [(ngModel)]="newTodoComment"
+      placeholder="Комментарий"
+      class="comment-input"
+    />
+
     <select [(ngModel)]="newTodoPriority" class="priority-select" name="priority">
       <option [value]="1">1 - Низкий</option>
       <option [value]="2">2 - Средний</option>
       <option [value]="3">3 - Высокий</option>
     </select>
+
     <input
       type="datetime-local"
       [(ngModel)]="newTodoDoTill"
@@ -23,6 +31,7 @@
       name="do_till"
       placeholder="Дедлайн"
     />
+
     <button (click)="addTodo()" class="add-button">Добавить</button>
   </div>
 
@@ -30,8 +39,7 @@
 
   <div *ngIf="!isLoading && todos.length > 0" class="priority-columns">
 
-    
-    <div class="priority-column low-priority">
+    <div *ngIf="lowPriorityTodos.length" class="priority-column low-priority">
       <h2>Низкий</h2>
       <ul>
         <li *ngFor="let todo of lowPriorityTodos" class="todo-item">
@@ -41,15 +49,17 @@
             (change)="toggleTodo(todo)"
             class="todo-checkbox"
           />
-          <span [class.completed]="todo.is_done">{{ todo.name }}</span>
-          <small *ngIf="todo.do_till"> — {{ todo.do_till | date:'short' }}</small>
+          <div class="todo-main">
+            <span [class.completed]="todo.is_done">{{ todo.name }}</span>
+            <small *ngIf="todo.do_till"> — {{ todo.do_till | date:'short' }}</small>
+            <div *ngIf="todo.comment" class="comment-box">{{ todo.comment }}</div>
+          </div>
           <button (click)="deleteTodo(todo.id!)" class="delete-button">×</button>
         </li>
       </ul>
     </div>
 
-
-    <div class="priority-column medium-priority">
+    <div *ngIf="mediumPriorityTodos.length" class="priority-column medium-priority">
       <h2>Средний</h2>
       <ul>
         <li *ngFor="let todo of mediumPriorityTodos" class="todo-item">
@@ -59,14 +69,17 @@
             (change)="toggleTodo(todo)"
             class="todo-checkbox"
           />
-          <span [class.completed]="todo.is_done">{{ todo.name }}</span>
-          <small *ngIf="todo.do_till"> — {{ todo.do_till | date:'short' }}</small>
+          <div class="todo-main">
+            <span [class.completed]="todo.is_done">{{ todo.name }}</span>
+            <small *ngIf="todo.do_till"> — {{ todo.do_till | date:'short' }}</small>
+            <div *ngIf="todo.comment" class="comment-box">{{ todo.comment }}</div>
+          </div>
           <button (click)="deleteTodo(todo.id!)" class="delete-button">×</button>
         </li>
       </ul>
     </div>
 
-    <div class="priority-column high-priority">
+    <div  *ngIf="highPriorityTodos.length" class="priority-column high-priority">
       <h2>Высокий</h2>
       <ul>
         <li *ngFor="let todo of highPriorityTodos" class="todo-item">
@@ -76,8 +89,11 @@
             (change)="toggleTodo(todo)"
             class="todo-checkbox"
           />
-          <span [class.completed]="todo.is_done">{{ todo.name }}</span>
-          <small *ngIf="todo.do_till"> — {{ todo.do_till | date:'short' }}</small>
+          <div class="todo-main">
+            <span [class.completed]="todo.is_done">{{ todo.name }}</span>
+            <small *ngIf="todo.do_till"> — {{ todo.do_till | date:'short' }}</small>
+            <div *ngIf="todo.comment" class="comment-box">{{ todo.comment }}</div>
+          </div>
           <button (click)="deleteTodo(todo.id!)" class="delete-button">×</button>
         </li>
       </ul>
