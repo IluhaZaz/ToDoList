@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 export class DashboardComponent implements OnInit {
   todos: ToDoItem[] = [];
   newTodoTitle = '';
+  newTodoPriority = 1; 
+  newTodoDoTill: string | null = null;
   isLoading = true;
 
   constructor(
@@ -47,8 +49,8 @@ export class DashboardComponent implements OnInit {
       name: this.newTodoTitle.trim(),
       is_done: false,
       comment: null,
-      priority: 0,
-      do_till: null
+      priority: this.newTodoPriority,    
+      do_till: this.newTodoDoTill ? new Date(this.newTodoDoTill) : null
     };
 
     this.todoService.addTodo(newTodo).subscribe({

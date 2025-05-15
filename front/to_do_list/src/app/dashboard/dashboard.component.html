@@ -11,6 +11,21 @@
         placeholder="Добавить новую задачу"
         class="todo-input"
       >
+      
+      <select [(ngModel)]="newTodoPriority" class="priority-select" name="priority">
+        <option [value]="1">1 - Низкий</option>
+        <option [value]="2">2 - Средний</option>
+        <option [value]="3">3 - Высокий</option>
+      </select>
+
+      <input
+        type="datetime-local"
+        [(ngModel)]="newTodoDoTill"
+        class="datetime-input"
+        name="do_till"
+        placeholder="Дедлайн"
+      >
+      
       <button (click)="addTodo()" class="add-button">Добавить</button>
     </div>
   
