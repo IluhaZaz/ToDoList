@@ -1,19 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';      
+import { FormsModule } from '@angular/forms';       
 import { ToDoItem, TodoService } from '../todo_service/todo.service';
 import { AuthService } from '../auth_service/auth.service';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
   todos: ToDoItem[] = [];
   newTodoTitle = '';
+  newTodoPriority = 1; 
+  newTodoDoTill: string | null = null;
+  newTodoComment: string | null = null;
   isLoading = true;
 
   constructor(
@@ -46,15 +50,17 @@ export class DashboardComponent implements OnInit {
       id: ``,
       name: this.newTodoTitle.trim(),
       is_done: false,
-      comment: null,
-      priority: 0,
-      do_till: null
+      comment: this.newTodoComment?.trim() || null,
+      priority: this.newTodoPriority,    
+      do_till: this.newTodoDoTill ? new Date(this.newTodoDoTill) : null
     };
 
     this.todoService.addTodo(newTodo).subscribe({
-      next: (todo) => {
-        this.todos.push(todo);
+      next: () => {
         this.newTodoTitle = '';
+        this.newTodoComment = '';
+        this.newTodoDoTill = null;
+        this.loadTodos();
       }
     });
   }
@@ -67,7 +73,7 @@ export class DashboardComponent implements OnInit {
   deleteTodo(id: string): void {
     this.todoService.deleteTodo(id).subscribe({
       next: () => {
-        this.todos = this.todos.filter(t => t.id !== id);
+        this.loadTodos();
       }
     });
   }
@@ -75,5 +81,9 @@ export class DashboardComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  getTodosByPriority(priority: number): ToDoItem[] {
+    return this.todos.filter(todo => todo.priority === priority);
   }
 }
