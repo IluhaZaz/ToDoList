@@ -3,11 +3,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 from uuid import UUID
+from datetime import datetime, timezone
 
 from core.schemas import ItemCreate, ItemRead, ItemUpdate
 from core.models import Item
 from database import get_async_session
 from auth.models import User
+
 
 
 router = APIRouter(
@@ -39,36 +41,38 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
                     user: User = Depends(current_user),
                     session: AsyncSession = Depends(get_async_session)):
     
-    if sort_by[0] not in (None, "priority", "do_till"):
-        raise HTTPException(status_code=422, detail=
-                            {
-                            "status": "error",
-                            "detail": "item added",
-                            "data": "wrong field to sort by"
-                            }
+    if sort_by[0] != "do_till":
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "error",
+                "detail": "item added",
+                "data": "sorting allowed only by 'do_till'"
+            }
         )
+
     try:
-        sort_by[1] = int(sort_by[1])
-    except:
-        raise HTTPException(status_code=422, detail=
-                            {
-                            "status": "error",
-                            "detail": "item added",
-                            "data": "second argument must be integer"
-                            }
+        reverse = bool(int(sort_by[1]))
+    except ValueError:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "status": "error",
+                "detail": "item added",
+                "data": "second argument must be integer (0 or 1)"
+            }
         )
 
-    query = select(User).options(joinedload(User.to_do_items)).filter(user.id == User.id)
-    user_with_items = await session.execute(query)
-    user_with_items = user_with_items.unique().scalars().first()
+    query = select(User).options(joinedload(User.to_do_items)).filter(User.id == user.id)
+    result = await session.execute(query)
+    user_with_items = result.unique().scalars().first()
 
-    res = [ItemRead.model_validate(i, from_attributes=True) for i in user_with_items.to_do_items]
+    res = [ItemRead.model_validate(item, from_attributes=True) for item in user_with_items.to_do_items]
 
-    #баг, а не фича И Я СКАЗАЛ ЧТО ЭТО НЕ НУЖНО
-    #ПОТОМ КАК НИБУДЬ ДОБАВЮ СОРТИРОВКУ ПО ВРЕМЕНИ, А ПОКА РАБОТАЕТ НЕ ТРОЖЬ
-    # Я ЗНАЮ ГДЕ ТЫ ЖИВЕШЬ И КОГДА ХОДИШЬ НА ПАРЫ
-    # if sort_by[1] != 0:
-    #     res.sort(key=lambda x: getattr(x, sort_by[0]), reverse=True if sort_by[1] > 0 else False)
+    res.sort(
+        key=lambda x: x.do_till if x.do_till is not None else datetime.max.replace(tzinfo=timezone.utc),
+
+    )
 
     return {
         "status": "ok",
