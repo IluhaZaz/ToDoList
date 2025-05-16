@@ -39,10 +39,10 @@
 
   <div *ngIf="!isLoading && todos.length > 0" class="priority-columns">
 
-    <div *ngIf="lowPriorityTodos.length" class="priority-column low-priority">
+    <div *ngIf="getTodosByPriority(1).length" class="priority-column low-priority">
       <h2>Низкий</h2>
       <ul>
-        <li *ngFor="let todo of lowPriorityTodos" class="todo-item">
+        <li *ngFor="let todo of getTodosByPriority(1)" class="todo-item">
           <input
             type="checkbox"
             [checked]="todo.is_done"
@@ -59,10 +59,10 @@
       </ul>
     </div>
 
-    <div *ngIf="mediumPriorityTodos.length" class="priority-column medium-priority">
+    <div *ngIf="getTodosByPriority(2).length" class="priority-column medium-priority">
       <h2>Средний</h2>
       <ul>
-        <li *ngFor="let todo of mediumPriorityTodos" class="todo-item">
+        <li *ngFor="let todo of getTodosByPriority(2)" class="todo-item">
           <input
             type="checkbox"
             [checked]="todo.is_done"
@@ -79,10 +79,10 @@
       </ul>
     </div>
 
-    <div  *ngIf="highPriorityTodos.length" class="priority-column high-priority">
+    <div *ngIf="getTodosByPriority(3).length" class="priority-column high-priority">
       <h2>Высокий</h2>
       <ul>
-        <li *ngFor="let todo of highPriorityTodos" class="todo-item">
+        <li *ngFor="let todo of getTodosByPriority(3)" class="todo-item">
           <input
             type="checkbox"
             [checked]="todo.is_done"
@@ -98,6 +98,7 @@
         </li>
       </ul>
     </div>
+
   </div>
 
   <div *ngIf="!isLoading && todos.length === 0" class="empty-message">

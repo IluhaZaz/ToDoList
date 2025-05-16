@@ -1,21 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';      
+import { FormsModule } from '@angular/forms';       
 import { ToDoItem, TodoService } from '../todo_service/todo.service';
 import { AuthService } from '../auth_service/auth.service';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
   todos: ToDoItem[] = [];
-  lowPriorityTodos: ToDoItem[] = [];
-  mediumPriorityTodos: ToDoItem[] = [];
-  highPriorityTodos: ToDoItem[] = [];
   newTodoTitle = '';
   newTodoPriority = 1; 
   newTodoDoTill: string | null = null;
@@ -37,11 +35,6 @@ export class DashboardComponent implements OnInit {
     this.todoService.getTodos().subscribe({
       next: (todos) => {
         this.todos = todos;
-
-        this.lowPriorityTodos = todos.filter(t => t.priority === 1);
-        this.mediumPriorityTodos = todos.filter(t => t.priority === 2);
-        this.highPriorityTodos = todos.filter(t => t.priority === 3);
-
         this.isLoading = false;
       },
       error: () => {
@@ -62,18 +55,12 @@ export class DashboardComponent implements OnInit {
       do_till: this.newTodoDoTill ? new Date(this.newTodoDoTill) : null
     };
 
-    // this.todoService.addTodo(newTodo).subscribe({
-    //   next: (todo) => {
-    //     this.todos.push(todo);
-    //     this.newTodoTitle = '';
-    //   }
-    // });
-
-        this.todoService.addTodo(newTodo).subscribe({
-        next: (todo) => {
+    this.todoService.addTodo(newTodo).subscribe({
+      next: () => {
         this.newTodoTitle = '';
         this.newTodoComment = '';
-        this.loadTodos();  
+        this.newTodoDoTill = null;
+        this.loadTodos();
       }
     });
   }
@@ -85,14 +72,18 @@ export class DashboardComponent implements OnInit {
 
   deleteTodo(id: string): void {
     this.todoService.deleteTodo(id).subscribe({
-        next: () => {
-          this.loadTodos();
-        }
-      });
+      next: () => {
+        this.loadTodos();
+      }
+    });
   }
 
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  getTodosByPriority(priority: number): ToDoItem[] {
+    return this.todos.filter(todo => todo.priority === priority);
   }
 }
