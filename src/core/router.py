@@ -37,31 +37,8 @@ async def add_item_to_list(item: ItemCreate,
 
 
 @router.get("/get_items")
-async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_length=2, min_length=2),
-                    user: User = Depends(current_user),
+async def get_items(user: User = Depends(current_user),
                     session: AsyncSession = Depends(get_async_session)):
-    
-    if sort_by[0] != "do_till":
-        raise HTTPException(
-            status_code=422,
-            detail={
-                "status": "error",
-                "detail": "item added",
-                "data": "sorting allowed only by 'do_till'"
-            }
-        )
-
-    try:
-        reverse = bool(int(sort_by[1]))
-    except ValueError:
-        raise HTTPException(
-            status_code=422,
-            detail={
-                "status": "error",
-                "detail": "item added",
-                "data": "second argument must be integer (0 or 1)"
-            }
-        )
 
     query = select(User).options(joinedload(User.to_do_items)).filter(User.id == user.id)
     result = await session.execute(query)
@@ -71,7 +48,6 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
 
     res.sort(
         key=lambda x: x.do_till if x.do_till is not None else datetime.max.replace(tzinfo=timezone.utc),
-
     )
 
     return {
