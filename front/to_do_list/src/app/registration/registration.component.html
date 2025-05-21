@@ -1,4 +1,7 @@
 <div class="registration-container">
+  <div class="top"></div>
+  <div class="bottom"></div>
+  <div class="center">
     <h1>Регистрация</h1>
     
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="registration-form">
@@ -76,7 +79,8 @@
         Зарегистрироваться
       </button>
     </form>
-</div>
 <div class="login-link">
   Уже есть аккаунт? <a routerLink="/login">Войти</a>
+</div>
+  </div>
 </div>
