@@ -86,4 +86,11 @@ export class DashboardComponent implements OnInit {
   getTodosByPriority(priority: number): ToDoItem[] {
     return this.todos.filter(todo => todo.priority === priority);
   }
+
+  autoGrow(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto';
+    textarea.style.height = '${textarea.scrollHeight}px';
+  }
+
 }
