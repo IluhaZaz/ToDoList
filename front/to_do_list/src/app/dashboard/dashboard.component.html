@@ -15,14 +15,12 @@
             placeholder="Добавить новую задачу"
             class="todo-input"
             rows="1"
-            (input)="autoGrow($event)"
           ></textarea>
 
           <textarea
             [(ngModel)]="newTodoComment"
             placeholder="Комментарий"
             class="comment-input"
-            (input)="autoGrow($event)"
           ></textarea>
 
           <select [(ngModel)]="newTodoPriority" class="priority-select" name="priority">
