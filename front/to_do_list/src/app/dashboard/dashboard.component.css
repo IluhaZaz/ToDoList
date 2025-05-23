@@ -1,12 +1,14 @@
 html {
   min-height: 100%;
-  max-width: 100%;
-  padding: 1rem 1rem;
+  min-width: 100%;
+  padding: 1rem;
   background-image: url("../image/background.png");
+  position: absolute;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  overflow: hidden;
 }
 
 .dashboard-container {
@@ -31,15 +33,16 @@ html {
 }
 
 .logout-button {
-  background: #f44336;
-  color: white;
+  background-color: #f44336;
+  width: 40px;
+  height: 40px;
+  background-image: url('../image/exit.png');
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: center;
   border: none;
-  padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
-}
-.logout-button:hover {
-  background: #d32f2f;
 }
 
 .todo-form {
@@ -58,12 +61,16 @@ html {
   resize: none;
 }
 
-.todo-input {
-  flex: 2;
-}
-
-.comment-input {
-  flex: 2;
+.todo-input .comment-input {
+  flex: 0 0 auto;
+  min-height: 50px;
+  height: auto;
+  
+  overflow-y: hidden;
+  resize: none;
+  
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .datetime-input {
@@ -194,6 +201,7 @@ html {
   padding: 0 0.5rem;
   transition: color 0.2s;
 }
+
 .delete-button:hover {
   color: #b71c1c;
 }
@@ -202,6 +210,14 @@ small {
   color: #555;
   font-size: 0.85rem;
   white-space: nowrap;
+}
+
+span {
+  white-space: pre-wrap; 
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  max-width: 100%; 
+  box-sizing: border-box; 
 }
 
 .loading,
@@ -281,7 +297,7 @@ small {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #5560b8;
+  background-color: #5561b895;
   border-radius: 10px;
   border: 2px solid #f1f1f1;
 }
