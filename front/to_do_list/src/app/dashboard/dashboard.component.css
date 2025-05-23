@@ -8,7 +8,8 @@ html {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  overflow: hidden;
+  font-size: 100%;
+  font-size: max(16px, 1rem);
 }
 
 .dashboard-container {
@@ -23,6 +24,7 @@ html {
 
 .dashboard-header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   margin: auto;
@@ -62,15 +64,7 @@ html {
 }
 
 .todo-input .comment-input {
-  flex: 0 0 auto;
-  min-height: 50px;
-  height: auto;
-  
-  overflow-y: hidden;
-  resize: none;
-  
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  flex: 1 1 100%
 }
 
 .datetime-input {
@@ -100,6 +94,7 @@ html {
 
 .priority-columns {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   justify-content: space-between;
   width: 100%;
@@ -231,8 +226,15 @@ span {
 
 .dashboard-content {
   display: flex;
+  flex-direction: column;
   gap: 2rem;
   margin-top: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-content {
+    flex-direction: row;
+  }
 }
 
 .tasks-area {
@@ -249,8 +251,7 @@ span {
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   height: fit-content;
   align-self: flex-start;
-  position: sticky;
-  top: 1rem;
+
 }
 
 .todo-form {
